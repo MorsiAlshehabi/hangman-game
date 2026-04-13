@@ -1,0 +1,3 @@
+fruit:appel,aardbei,banan,watermeloen,kers,peer,druif,perzik,meloen,sinaasappel,kiwi,framboos
+dieren:kat,hond,paard,olifant,leeuw,tijger,konijn,beer,vos,muurhond,uil,slang
+objecten:stoel,tafel,telefoon,computer,pen,boek,lamp,deur,raam,bed,bank,klok

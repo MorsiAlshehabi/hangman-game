@@ -1,0 +1,56 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #39643a;
+    text-align: center;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 18px;
+}
+
+input[type=button],
+input[type=submit],
+input[type=text] {
+    background-color: #39643a;
+    border: 2px solid white;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 8px auto;
+    cursor: pointer;
+    font-family: 'Patrick Hand', cursive;
+    display: block;
+}
+
+input[type=submit]:hover {
+    background-color: #18572a;
+    transform: scale(1.05);
+}
+
+.cat-btn {
+    display: block;
+    width: 220px;
+    background-color: #39643a;
+    border: 2px solid white;
+    color: white;
+    padding: 16px 32px;
+    margin: 10px auto;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: 'Patrick Hand', cursive;
+    transition: 0.3s;
+}
+
+.cat-btn:hover {
+    background-color: #18572a;
+    transform: scale(1.05);
+}
+
+#chosenWord::placeholder {
+    color: black;
+    font-style: italic;
+    text-align: center;
+}
+
+span {
+    color: black;
+}
