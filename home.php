@@ -9,7 +9,6 @@
 </head>
 
 <body>
-  
     <h1>Welcome to Hangman</h1>
     <img id="hangmanLogo" src="./images/hangman.png" />
     <form action="chooseCategory.php" method="POST">

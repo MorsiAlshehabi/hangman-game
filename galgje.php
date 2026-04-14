@@ -6,7 +6,6 @@ session_start();
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -33,7 +32,7 @@ session_start();
         }
 
         return $_SESSION['word'] ?? null;
-}
+    }
     $word = generateWordFromCategory();
 
     function chooseWords() {
@@ -41,11 +40,11 @@ session_start();
             $woord = $_POST['chosenWord'];
             $_SESSION['word'] = strtoupper($woord);
         }
-        return $_SESSION['word']?? true;      
+        return $_SESSION['word']?? null;      
     }
     
 
-   function checkLetter() {
+    function checkLetter() {
         if (!isset($_SESSION['wrongLetters'])) { 
             $_SESSION['wrongLetters'] = array();
             // nu wrong letter = empty array daarna ik push fout letter in deze array
@@ -58,8 +57,8 @@ session_start();
           /*
           strpos(sensantief voor letter:je moet let op voor letter if groet of klien => daarom ik gebruik stripos
           want met i niet sesantief) stripos= string possion 3 parameter (1,2,3) 
-          1:welke variable wil ik zoken(requierd moet ik uitvoeren),
-          2:welke letter of nummer wil ik zoken(requierd),
+          1:welke variable wil ik zoeken(requierd moet ik uitvoeren),
+          2:welke letter of nummer wil ik zoeken(requierd),
           3: ofset van welke index wil ik beginnen(optional hoef niet uitvoeren)
           */ 
             if (stripos(chooseWords(), $_POST['playerGuess'][0]) === false) {
@@ -71,7 +70,7 @@ session_start();
     } 
     checkLetter();
    
-   function replaceRightLetter() {
+    function replaceRightLetter() {
         $wordHint = "";
         for ($i = 0; $i < strlen(chooseWords()); $i++) {
             $wordHint .= in_array(substr(chooseWords(), $i, 1), $_SESSION['rightLetters']) ? substr(chooseWords(), $i, 1) : " _ ";
@@ -81,7 +80,7 @@ session_start();
     $wordHin = replaceRightLetter();
     
     echo "<h1>Hangman</h1>";
-    $_SESSION['chances'] = 7 - count($_SESSION['wrongLetters']);
+    $_SESSION['chances'] = max(0, 7 - count($_SESSION['wrongLetters']));
     echo '<p> The word is: ' .'<span>' . $wordHin . '</span>' .  '</p>';
     echo '<p id="chances"> You have ' . strval($_SESSION['chances']) .  ' chances left. </p>'; 
     $img = "images/hang" . count($_SESSION['wrongLetters']) . ".png";
@@ -109,35 +108,42 @@ session_start();
     <form action="destroy.php" method="post">
         <input type="submit" value="Reset the game and return to main menu." />
     </form>
+
     <form method="POST" id="letter">
-        <?php
-if (!isset($_SESSION['game_over'])  == "playing") {
 
-    echo '<p> Letters left: </p>';
+        <?php if (!isset($_SESSION['game_over'])): ?>
 
-    $alphabet = range("A", "Z");
+            <p>Letters left:</p>
 
-    foreach ($alphabet as $letter) {
-        if (!in_array($letter, $_SESSION['rightLetters']) && !in_array($letter, $_SESSION['wrongLetters'])) {
-            if ($_SESSION['chances'] > 0) {
-                if (chooseWords() != replaceRightLetter()) {
-?>
-                <input name="playerGuess"
-                       id="<?php echo $letter?>"
-                       type="submit"
-                       value="<?php echo $letter?>"
-                       class="letterbutton" />
-<?php
-                }
-            }
-        }
-    }
-}
-?>
+            <?php 
+                $alphabet = range("A", "Z"); 
+            ?>
+
+            <?php foreach ($alphabet as $letter): ?>
+
+                <?php 
+                if (
+                    !in_array($letter, $_SESSION['rightLetters']) &&
+                    !in_array($letter, $_SESSION['wrongLetters']) &&
+                    $_SESSION['chances'] > 0 &&
+                    chooseWords() != replaceRightLetter()
+                    ): ?>
+
+                    <input 
+                        name="playerGuess"
+                        id="<?= $letter ?>"
+                        type="submit"
+                        value="<?= $letter ?>"
+                        class="letterbutton" 
+                    />
+
+                <?php endif; ?>
+
+            <?php endforeach; ?>
+
+        <?php endif; ?>
+
     </form>
 
-
-
 </body>
-
 </html>

@@ -1,5 +1,7 @@
 <?php
+
 $lines = file("words.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
 ?>
 
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -7,14 +9,15 @@ $lines = file("words.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 <form action="galgje.php" method="POST">
 
-<?php
-foreach ($lines as $line) {
-    list($category, $words) = explode(":", $line);
+    <?php
 
-    echo '<button type="submit" name="category" value="'.$line.'" class="cat-btn">
-        '.ucfirst($category).'
-      </button>';
-}
-?>
+        foreach ($lines as $line) {
+            list($category, $words) = explode(":", $line);
+             echo '<button type="submit" name="category" value="'.$line.'" class="cat-btn">
+            '.ucfirst($category).'
+            </button>';
+        }
+
+    ?>
 
 </form>
