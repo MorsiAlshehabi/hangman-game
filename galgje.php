@@ -5,103 +5,97 @@ session_start();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Hangman - Playing!</title>
-    <meta name="description" content="Play hangman">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play_Hangman</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <?php 
+        function generateWordFromCategory() {
+            if(isset($_POST['category'])) {
+                list($category, $words) = explode(':', $_POST['category']);
+                $_SESSION['category'] = $category;
+                $wordsArray = explode(",", $words);
+                $_SESSION['word'] = strtoupper($wordsArray[array_rand($wordsArray)]);
+            }
+            return $_SESSION['word'] ?? "";
+        }
+        $playWord = generateWordFromCategory();
     
-    <?php
-
-    function generateWordFromCategory() {
-        if (isset($_POST['category'])) {
-
-            list($category, $words) = explode(":", $_POST['category']);
-
-            $_SESSION['category'] = $category;
-
-            $wordsArray = explode(",", $words);
-
-            $_SESSION['word'] = strtoupper($wordsArray[array_rand($wordsArray)]);
+        function chooseWords() {
+            if(isset($_POST['writeword'])) {
+               $writeWord = $_POST['writeword'];
+               $_SESSION['word'] = strtoupper($writeWord);
+            }
+            return $_SESSION['word'] ?? "";
         }
+        $playWriteWord = chooseWords();
 
-        return $_SESSION['word'] ?? null;
-    }
-    $word = generateWordFromCategory();
+        function checkLetter(string $word) {
+            if (!isset($_SESSION['wrongLetters'])) {
+                $_SESSION['wrongLetters'] = array();
+            }
 
-    function chooseWords() {
-        if (isset($_POST['chosenWord'])) {
-            $woord = $_POST['chosenWord'];
-            $_SESSION['word'] = strtoupper($woord);
+            if (!isset($_SESSION['rightLetters'])) {
+                $_SESSION['rightLetters'] = array();
+            }
+
+            if (isset($_POST['playerGuess'])) {
+                $letter = $_POST['playerGuess'][0];
+                if (stripos($word, $letter) === false) {
+                    array_push($_SESSION['wrongLetters'], $letter);
+                } else {
+                    array_push($_SESSION['rightLetters'], $letter);
+                }
+            }
+
         }
-        return $_SESSION['word']?? null;      
-    }
-    
+        checkLetter($playWriteWord);
 
-    function checkLetter() {
-        if (!isset($_SESSION['wrongLetters'])) { 
-            $_SESSION['wrongLetters'] = array();
-            // nu wrong letter = empty array daarna ik push fout letter in deze array
-        } 
-        if (!isset($_SESSION['rightLetters'])) {
-            $_SESSION['rightLetters'] = array();
-            // nu right letter = empty array daarna ik push right letter in deze array
+        function replaceRightLetter(string $word) {
+            $wordHint = "";
+            for ($i = 0; $i < strlen($word); $i++) {
+                $letter = substr($word, $i, 1);
+                $wordHint .= in_array($letter, $_SESSION['rightLetters']) ? $letter : " _ ";
+            }
+            return $wordHint;
         }
-        if (isset($_POST['playerGuess'])) { // playerguess = letter kies van letters
-          /*
-          strpos(sensantief voor letter:je moet let op voor letter if groet of klien => daarom ik gebruik stripos
-          want met i niet sesantief) stripos= string possion 3 parameter (1,2,3) 
-          1:welke variable wil ik zoeken(requierd moet ik uitvoeren),
-          2:welke letter of nummer wil ik zoeken(requierd),
-          3: ofset van welke index wil ik beginnen(optional hoef niet uitvoeren)
-          */ 
-            if (stripos(chooseWords(), $_POST['playerGuess'][0]) === false) {
-                array_push($_SESSION['wrongLetters'], $_POST['playerGuess'][0]); 
-            } else {
-                array_push($_SESSION['rightLetters'], $_POST['playerGuess'][0]); 
+        $wordHin = replaceRightLetter($playWriteWord);
+
+        echo "<h1> Hangman </h1>";
+        $_SESSION['chances'] = max(0, 7 - count($_SESSION['wrongLetters']));
+        echo '<p> The word is: ' .'<span>' . $wordHin . '</span>' .  '</p>';
+        echo '<p id="chances"> You have ' . $_SESSION['chances'] .  ' chances left. </p>'; 
+        $img = "images/hang" . count($_SESSION['wrongLetters']) . ".png";
+        echo "<img id='hangman' src='$img'>";
+
+        function checkWinLoss(string $word) {
+            if ($_SESSION['chances'] <= 0) {
+                $_SESSION['game_over'] = true;
+                echo "YOU DIED!";
+                echo '<span>The word was: ' . $word . '</span>';
+                return;
+                
+            }
+        
+            if ($word === replaceRightLetter($word)) {
+                $_SESSION['game_over'] = true;
+                echo '<h1>You did it!</h1>';
+                echo "<img id='vuurwerk' src='images/vuurwerk.gif'>";
+                echo '<div class="balloons">';
+                echo '<div class="balloon"></div>';
+                echo '<div class="balloon"></div>';
+                echo '<div class="balloon"></div>';
+                echo '<div class="balloon"></div>';
+                echo '<div class="balloon"></div>';
+                echo '</div>';
+                return;
             }
         }
-    } 
-    checkLetter();
-   
-    function replaceRightLetter() {
-        $wordHint = "";
-        for ($i = 0; $i < strlen(chooseWords()); $i++) {
-            $wordHint .= in_array(substr(chooseWords(), $i, 1), $_SESSION['rightLetters']) ? substr(chooseWords(), $i, 1) : " _ ";
-        }
-        return $wordHint;
-    }
-    $wordHin = replaceRightLetter();
-    
-    echo "<h1>Hangman</h1>";
-    $_SESSION['chances'] = max(0, 7 - count($_SESSION['wrongLetters']));
-    echo '<p> The word is: ' .'<span>' . $wordHin . '</span>' .  '</p>';
-    echo '<p id="chances"> You have ' . strval($_SESSION['chances']) .  ' chances left. </p>'; 
-    $img = "images/hang" . count($_SESSION['wrongLetters']) . ".png";
-    echo "<img id='hangman' src='$img'>";
-    
-    function checkWinLoss(){
-        if ($_SESSION['chances'] <= 0) {
-            $_SESSION['game_over'] = true;
-            echo "YOU DIED!";
-            echo '<span>The word was: ' . chooseWords() . '</span>';
-            
-        }
-    
-        if (chooseWords() == replaceRightLetter()) {
-            $_SESSION['game_over'] = true;
-            echo '<h1>You did it!</h1>';
-            echo "<img id='vuurwerk' src='images/vuurwerk.gif'>";
-            
-        }
-    }
-    checkWinLoss();
+        checkWinLoss($playWriteWord);
     
     ?>
 
@@ -125,8 +119,7 @@ session_start();
                 if (
                     !in_array($letter, $_SESSION['rightLetters']) &&
                     !in_array($letter, $_SESSION['wrongLetters']) &&
-                    $_SESSION['chances'] > 0 &&
-                    chooseWords() != replaceRightLetter()
+                    $_SESSION['chances'] > 0
                     ): ?>
 
                     <input 
@@ -147,3 +140,4 @@ session_start();
 
 </body>
 </html>
+
