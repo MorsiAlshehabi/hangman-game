@@ -21,19 +21,21 @@ session_start();
                 $wordsArray = explode(",", $words);
                 $_SESSION['word'] = strtoupper($wordsArray[array_rand($wordsArray)]);
             }
-            return $_SESSION['word'] ?? "";
+            return $_SESSION['word'] ?? null;
         }
-        $playWord = generateWordFromCategory();
-    
+        
         function chooseWords() {
             if(isset($_POST['writeword'])) {
-               $writeWord = $_POST['writeword'];
-               $_SESSION['word'] = strtoupper($writeWord);
+                $writeWord = $_POST['writeword'];
+                $_SESSION['word'] = strtoupper($writeWord);
             }
-            return $_SESSION['word'] ?? "";
+            return $_SESSION['word'] ?? null;
         }
-        $playWriteWord = chooseWords();
-
+            
+            $playWord = generateWordFromCategory();
+            $playWriteWord = chooseWords();
+            $word = $_SESSION['word'] ?? null;
+            
         function checkLetter(string $word) {
             if (!isset($_SESSION['wrongLetters'])) {
                 $_SESSION['wrongLetters'] = array();

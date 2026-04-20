@@ -13,7 +13,7 @@
     <h1>Choose your Hangman word.</h1>
     <form action="galgje.php" method="POST">
         <label for="chosenWord">Hangman word:</label>
-        <input type="text" id="chosenWord" name="chosenWord" placeholder="Enter your word" pattern="[a-zA-Z]{3,}" required><br>
+        <input type="text" id="chosenWord" name="writeword" placeholder="Enter your word" pattern="[a-zA-Z]{3,}" required><br>
         <input type="submit" name="chooseWord" value="Submit">
     </form>
 </body>
