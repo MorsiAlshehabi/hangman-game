@@ -36,3 +36,23 @@ OR
 Choose your own word
 
 ---
+
+## 🎮 Hangman Game Preview
+
+### Start Screen
+![Start](screenshots/start.png)
+
+### Gameplay
+![Play](screenshots/playing.png)
+
+### Result Screen
+![Result](screenshots/win.png)
+
+### Result Screen
+![Result](screenshots/loss.png)
+
+---
+
+## 📌 Author
+
+Morsi Alshehabi
